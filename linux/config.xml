@@ -1,0 +1,840 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cruise xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cruise-config.xsd" schemaVersion="89">
+  <server artifactsdir="artifacts" agentAutoRegisterKey="8b0dbc52-f4c9-4230-99cb-fe426d40f5b7" commandRepositoryLocation="default" serverId="2c3beecd-4b43-47c7-b884-65a11256a4a5">
+    <elastic>
+      <profiles>
+        <profile id="centos" pluginId="cd.go.contrib.elastic-agent.docker">
+          <property>
+            <key>Image</key>
+            <value>getgauge/gauge-centos:latest</value>
+          </property>
+          <property>
+            <key>Command</key>
+            <value />
+          </property>
+          <property>
+            <key>Environment</key>
+            <value />
+          </property>
+        </profile>
+      </profiles>
+    </elastic>
+  </server>
+  <pipelines group="Gauge">
+    <pipeline name="Gauge-Build">
+      <materials>
+        <git url="https://github.com/getgauge/gauge.git" materialName="Gauge" />
+      </materials>
+      <stage name="build" cleanWorkingDir="true">
+        <jobs>
+          <job name="linux" elasticProfileId="centos">
+            <environmentvariables>
+              <variable name="GOPATH">
+                <value>/tmp</value>
+              </variable>
+              <variable name="GOBIN">
+                <value>/tmp/bin</value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>rm -rf $GOPATH/src</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/bash">
+                <arg>-c</arg>
+                <arg>echo $PATH</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>go get -d -u -t -v github.com/getgauge/gauge</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>go get github.com/tools/godep &amp;&amp; $GOBIN/godep restore</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>echo "godep restore"</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>(cd $GOPATH/src/github.com/getgauge/gauge &amp;&amp; go run build/make.go --test)</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="go">
+                <arg>get</arg>
+                <arg>github.com/getgauge/common</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="go">
+                <arg>version</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>(rm -rf bin; go run -v build/make.go)</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="*" dest="gauge-compile" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="Gauge-Package" isLocked="false">
+      <environmentvariables>
+        <variable name="GOPATH">
+          <value>/tmp</value>
+        </variable>
+        <variable name="version">
+          <value>0.3.3</value>
+        </variable>
+        <variable name="GOBIN">
+          <value>/tmp/bin</value>
+        </variable>
+      </environmentvariables>
+      <materials>
+        <git url="https://github.com/getgauge/gauge" />
+      </materials>
+      <stage name="deb" cleanWorkingDir="true">
+        <jobs>
+          <job name="create_deb">
+            <tasks>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>rm -rf $GOPATH/src &amp;&amp; go get -d -u -t -v github.com/getgauge/gauge</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>go get github.com/tools/godep &amp;&amp; cd $GOPATH/src/github.com/getgauge/gauge &amp;&amp; $GOBIN/godep restore</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="chmod">
+                <arg>+x</arg>
+                <arg>./build/mkdeb.sh</arg>
+                <arg>./build/packaging/deb/postinst</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/bash">
+                <arg>-c</arg>
+                <arg>(./build/mkdeb.sh)</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>linux</resource>
+            </resources>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="rpm" cleanWorkingDir="true">
+        <jobs>
+          <job name="create_rpm">
+            <tasks>
+              <exec command="chmod">
+                <arg>+x</arg>
+                <arg>build/mkrpm.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/bash">
+                <arg>-c</arg>
+                <arg>(./build/mkrpm.sh)</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>linux</resource>
+            </resources>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+  </pipelines>
+  <pipelines group="Gauge-Java">
+    <pipeline name="Java-Build">
+      <materials>
+        <git url="https://github.com/getgauge/gauge-java" />
+      </materials>
+      <stage name="build" cleanWorkingDir="true">
+        <jobs>
+          <job name="compile_and_unit_test">
+            <environmentvariables>
+              <variable name="GOBIN">
+                <value />
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <exec command="go">
+                <arg>run</arg>
+                <arg>make.go</arg>
+                <arg>--all-platforms</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>linux</resource>
+            </resources>
+            <artifacts>
+              <artifact src="*" dest="gauge-java" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="Java-Package">
+      <materials>
+        <pipeline pipelineName="Java-Build" stageName="build" materialName="Java-Build" />
+      </materials>
+      <stage name="package" cleanWorkingDir="true">
+        <jobs>
+          <job name="distro">
+            <environmentvariables>
+              <variable name="GOPATH">
+                <value>/tmp</value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <exec command="git">
+                <arg>clone</arg>
+                <arg>https://github.com/getgauge/gauge-java</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="go" workingdir="gauge-java">
+                <arg>run</arg>
+                <arg>make.go</arg>
+                <arg>--all-platforms</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh" workingdir="gauge-java">
+                <arg>-c</arg>
+                <arg>(chmod +x bin/*/*)</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="go" workingdir="gauge-java">
+                <arg>run</arg>
+                <arg>make.go</arg>
+                <arg>--distro</arg>
+                <arg>--all-platforms</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>linux</resource>
+            </resources>
+            <artifacts>
+              <artifact src="gauge-java/deploy/*" dest="deploy" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+  </pipelines>
+  <pipelines group="Gauge-Ruby">
+    <pipeline name="Ruby-Build">
+      <materials>
+        <git url="https://github.com/getgauge/gauge-ruby" />
+      </materials>
+      <stage name="build" cleanWorkingDir="true">
+        <jobs>
+          <job name="compile_and_unit_test">
+            <tasks>
+              <exec command="rbenv">
+                <arg>install</arg>
+                <arg>-s</arg>
+                <arg>2.3.0</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="rbenv">
+                <arg>local</arg>
+                <arg>2.3.0</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="gem">
+                <arg>install</arg>
+                <arg>bundler</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bundle">
+                <arg>install</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="rake">
+                <arg>spec</arg>
+                <arg>-f</arg>
+                <arg>RakeFile</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>linux</resource>
+            </resources>
+            <artifacts>
+              <artifact src="*" dest="gauge-ruby" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="Ruby-Package">
+      <environmentvariables>
+        <variable name="GOPATH">
+          <value>/tmp/gauge_ruby</value>
+        </variable>
+      </environmentvariables>
+      <materials>
+        <pipeline pipelineName="Ruby-Build" stageName="build" materialName="Gauge-Ruby" />
+      </materials>
+      <stage name="package" cleanWorkingDir="true">
+        <jobs>
+          <job name="package">
+            <tasks>
+              <exec command="mkdir">
+                <arg>-p</arg>
+                <arg>$GOPATH</arg>
+                <runif status="passed" />
+              </exec>
+              <fetchartifact pipeline="Ruby-Build" stage="build" job="compile_and_unit_test" srcdir="gauge-ruby">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="/bin/sh" workingdir="gauge-ruby">
+                <arg>-c</arg>
+                <arg>(rm -rf pkg deploy)</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="rake" workingdir="gauge-ruby">
+                <arg>package_all</arg>
+                <arg>-f</arg>
+                <arg>RakeFile</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>linux</resource>
+            </resources>
+            <artifacts>
+              <artifact src="gauge-ruby/deploy" />
+              <artifact src="gauge-ruby/pkg/gauge-ruby-*.gem" dest="build" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+  </pipelines>
+  <pipelines group="IDE_Plugins">
+    <authorization>
+      <view>
+        <user>view</user>
+      </view>
+    </authorization>
+    <pipeline name="Intellij">
+      <materials>
+        <git url="https://github.com/getgauge/Intellij-Plugin.git" />
+      </materials>
+      <stage name="test">
+        <jobs>
+          <job name="test">
+            <tasks>
+              <exec command="./gradlew">
+                <arg>clean</arg>
+                <arg>test</arg>
+              </exec>
+            </tasks>
+            <resources>
+              <resource>linux</resource>
+            </resources>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="build">
+        <jobs>
+          <job name="build">
+            <tasks>
+              <exec command="/bin/sh">
+                <arg>setVar.sh</arg>
+              </exec>
+              <exec command="./gradlew">
+                <arg>clean</arg>
+                <arg>buildPlugin</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>linux</resource>
+            </resources>
+            <artifacts>
+              <artifact src="build/distributions/Gauge-Java-Intellij-*.zip" dest="artifact" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+  </pipelines>
+  <pipelines group="Other_Plugins">
+    <pipeline name="HTML_Report">
+      <environmentvariables>
+        <variable name="GOPATH">
+          <value>/tmp</value>
+        </variable>
+        <variable name="GOBIN">
+          <value>/tmp/bin</value>
+        </variable>
+      </environmentvariables>
+      <materials>
+        <git url="https://github.com/getgauge/html-report" />
+      </materials>
+      <stage name="build" cleanWorkingDir="true">
+        <jobs>
+          <job name="linux">
+            <tasks>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>rm -rf $GOPATH/src</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>go get -d -u -t -v github.com/getgauge/html-report</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>(cd $GOPATH/src/github.com/getgauge/html-report &amp;&amp; go get -t ./...)</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>go test ./...</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>go run build/make.go</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>linux</resource>
+            </resources>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="package" cleanWorkingDir="true">
+        <jobs>
+          <job name="package">
+            <tasks>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>rm -rf $GOPATH/src</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>go get -d -u -t -v github.com/getgauge/html-report</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>(cd $GOPATH/src/github.com/getgauge/html-report &amp;&amp; go get -t ./...)</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>go run build/make.go --all-platforms</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>go run build/make.go --all-platforms --distro</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>linux</resource>
+            </resources>
+            <artifacts>
+              <artifact src="deploy" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="XML_Report">
+      <environmentvariables>
+        <variable name="GOPATH">
+          <value>/tmp</value>
+        </variable>
+        <variable name="GOBIN">
+          <value>/tmp/bin</value>
+        </variable>
+      </environmentvariables>
+      <materials>
+        <git url="https://github.com/getgauge/xml-report" />
+      </materials>
+      <stage name="build" cleanWorkingDir="true">
+        <jobs>
+          <job name="linux">
+            <tasks>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>go get -d -u -t -v github.com/getgauge/xml-report</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>cd $GOPATH/src/github.com/getgauge/xml-report; go get -t ./...</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>go test ./...</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>go run build/make.go</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>linux</resource>
+            </resources>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="package" cleanWorkingDir="true">
+        <jobs>
+          <job name="package">
+            <tasks>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>go get -d -u -t -v github.com/getgauge/xml-report</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>go run build/make.go --all-platforms</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>go run build/make.go --all-platforms --distro</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>linux</resource>
+            </resources>
+            <artifacts>
+              <artifact src="deploy" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="Maven">
+      <materials>
+        <git url="https://github.com/getgauge/gauge-maven-plugin" />
+      </materials>
+      <stage name="test" cleanWorkingDir="true">
+        <jobs>
+          <job name="test">
+            <tasks>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>mvn clean test</arg>
+              </exec>
+            </tasks>
+            <resources>
+              <resource>linux</resource>
+            </resources>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="Mvn-Archetypes">
+      <environmentvariables>
+        <variable name="GOPATH">
+          <value>/tmp</value>
+        </variable>
+        <variable name="GAUGE_ROOT">
+          <value>/tmp</value>
+        </variable>
+        <variable name="GOBIN">
+          <value />
+        </variable>
+      </environmentvariables>
+      <materials>
+        <git url="https://github.com/getgauge/gauge-mvn-archetypes.git" />
+      </materials>
+      <stage name="test" cleanWorkingDir="true">
+        <jobs>
+          <job name="Integration-test">
+            <tasks>
+              <exec command="/bin/sh">
+                <arg>setup_gauge.sh</arg>
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>(mvn clean install archetype:integration-test -Dgpg.passphrase=$gpg_passphrase)</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>linux</resource>
+            </resources>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="Spectacle">
+      <environmentvariables>
+        <variable name="GOPATH">
+          <value>/tmp</value>
+        </variable>
+        <variable name="GOBIN">
+          <value>/tmp/bin</value>
+        </variable>
+      </environmentvariables>
+      <materials>
+        <git url="https://github.com/getgauge/spectacle" />
+      </materials>
+      <stage name="build" cleanWorkingDir="true">
+        <jobs>
+          <job name="linux">
+            <tasks>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>rm -rf $GOPATH/src</arg>
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>go get -d -u -t -v github.com/getgauge/spectacle</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>go test ./...</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>go run build/make.go</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>linux</resource>
+            </resources>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="package" cleanWorkingDir="true">
+        <jobs>
+          <job name="package">
+            <tasks>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>go run build/make.go --all-platforms</arg>
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>go run build/make.go --all-platforms --distro</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>linux</resource>
+            </resources>
+            <artifacts>
+              <artifact src="bin/distros" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+  </pipelines>
+  <pipelines group="Misc">
+    <authorization>
+      <view>
+        <user>view</user>
+      </view>
+    </authorization>
+    <pipeline name="Templates">
+      <materials>
+        <git url="https://github.com/getgauge/gauge-repository.git" />
+      </materials>
+      <stage name="Prepare" cleanWorkingDir="true">
+        <jobs>
+          <job name="createZips">
+            <tasks>
+              <exec command="rm" workingdir="templates">
+                <arg>-rf</arg>
+                <arg>zips</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh" workingdir="templates">
+                <arg>-c</arg>
+                <arg>(for i in `ls -d */`; do mkdir -p zips; dirname=$(echo $i | sed 's/.$//'); zip -r zips/$dirname.zip $dirname; done)</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>linux</resource>
+            </resources>
+            <artifacts>
+              <artifact src="templates/zips" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="Common">
+      <materials>
+        <git url="https://github.com/getgauge/common.git" />
+      </materials>
+      <stage name="test" cleanWorkingDir="true">
+        <jobs>
+          <job name="linux">
+            <environmentvariables>
+              <variable name="GOPATH">
+                <value>/tmp</value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>rm -rf $GOPATH/src</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="go">
+                <arg>get</arg>
+                <arg>-d</arg>
+                <arg>-u</arg>
+                <arg>-t</arg>
+                <arg>github.com/getgauge/common</arg>
+              </exec>
+              <exec command="go">
+                <arg>test</arg>
+                <arg>-v</arg>
+                <arg>github.com/getgauge/common</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>linux</resource>
+            </resources>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+  </pipelines>
+  <pipelines group="Documentation">
+    <pipeline name="docs.getgauge.io">
+      <environmentvariables>
+        <variable name="LC_ALL">
+          <value>en_US.utf-8</value>
+        </variable>
+        <variable name="LANG">
+          <value>en_US.utf-8</value>
+        </variable>
+      </environmentvariables>
+      <materials>
+        <git url="https://github.com/getgauge/docs.getgauge.io.git" />
+      </materials>
+      <stage name="build" cleanWorkingDir="true">
+        <jobs>
+          <job name="build">
+            <tasks>
+              <exec command="git">
+                <arg>version</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="virtualenv">
+                <arg>docs</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/bash">
+                <arg>-c</arg>
+                <arg>source ./docs/bin/activate &amp;&amp; pip install -r requirements.txt &amp;&amp; make zip &amp;&amp; deactivate</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <tabs>
+              <tab name="preview" path="deploy/index.html" />
+            </tabs>
+            <resources>
+              <resource>linux</resource>
+            </resources>
+            <artifacts>
+              <artifact src="_build/html/*" dest="deploy" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+  </pipelines>
+  <pipelines group="Website">
+    <pipeline name="getgauge.io">
+      <materials>
+        <git url="https://github.com/getgauge/getgauge.github.io" branch="redesign" />
+      </materials>
+      <stage name="build">
+        <jobs>
+          <job name="build">
+            <tasks>
+              <exec command="rbenv">
+                <arg>install</arg>
+                <arg>-s</arg>
+                <arg>2.4.0</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="rbenv">
+                <arg>local</arg>
+                <arg>2.4.0</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="gem">
+                <arg>install</arg>
+                <arg>bundler</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bundle">
+                <arg>install</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="/bin/sh">
+                <arg>-c</arg>
+                <arg>(LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/rh/nodejs010/root/usr/lib64/ bundle exec middleman build --verbose)</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="cp">
+                <arg>Gauge_Badge.svg</arg>
+                <arg>build/</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <tabs>
+              <tab name="preview" path="deploy/index.html" />
+            </tabs>
+            <resources>
+              <resource>linux</resource>
+            </resources>
+            <artifacts>
+              <artifact src="build/*" dest="deploy" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+  </pipelines>
+</cruise>
+
