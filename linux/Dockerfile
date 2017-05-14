@@ -15,7 +15,7 @@ yum install -y nodejs npm python34 jq fakeroot rpm-build rpmdevtools libxml2-dev
 curl https://bootstrap.pypa.io/get-pip.py | python3 &&\
 curl -o mvn.tar.gz http://redrockdigimark.com/apachemirror/maven/maven-3/3.5.0/binaries/apache-maven-3.5.0-bin.tar.gz && tar -C /opt -xzf mvn.tar.gz &&\
 echo -e "export JAVA_HOME=/usr/lib/jvm/java-openjdk\nexport M2_HOME=/opt/apache-maven-3.5.0\nexport PATH=/opt/apache-maven-3.5.0/bin:${PATH}" >> /etc/default/go-agent && source /etc/default/go-agent &&\
-chown go /home/go && pip install --upgrade --user awscli==1.11.18 && pip install virtualenv &&\
-su go -c "source /etc/default/go-agent && cd /home/go && rbenv install 2.3.0 && rbenv local 2.3.0 && gem install rake && gem install bundler && rbenv install 2.4.0 && rbenv local 2.4.0 && gem install bundler" &&\
-echo "export GO_SERVER_SYSTEM_PROPERTIES=\"$GO_SERVER_SYSTEM_PROPERTIES -Dplugin.cd.go.contrib.elastic-agent.docker.log.level=debug\"" >> /etc/default/go-agent &&\
-java -version && javac -version && mono --version && go version && git --version && node --version && python3 --version && pip --version && npm --version && mvn --version && jq --version)
+chown go /home/go && pip install virtualenv && su go -c "source /etc/default/go-agent && pip install --upgrade --user awscli==1.11.18" && echo "export PATH=$PATH:/home/go/.local/bin" >> /etc/default/go-agent &&\
+su go -c "source /etc/default/go-agent && cd /home/go && rbenv install 2.3.0 && rbenv local 2.3.0 && gem install rake && gem install parser && gem install json && gem install bundler && rbenv install 2.4.0 && rbenv local 2.4.0 && gem install bundler && rbenv global 2.3.0" &&\
+su go -c "mkdir -p /home/go/.ssh/ && ssh-keyscan -t rsa github.com >> /home/go/.ssh/known_hosts && git config --global user.email \"gaugeci@gmail.com\" && git config --global user.name gaugeci" &&\
+echo "export GO_SERVER_SYSTEM_PROPERTIES=\"$GO_SERVER_SYSTEM_PROPERTIES -Dplugin.cd.go.contrib.elastic-agent.docker.log.level=debug\"" >> /etc/default/go-agent)
