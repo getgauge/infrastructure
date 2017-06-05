@@ -33,5 +33,3 @@ hdiutil unmount /Volumes/Packages\ *
 
 curl -O https://download.gocd.io/binaries/17.4.0-4892/generic/go-agent-17.4.0-4892.zip
 unzip go-agent-17.4.0-4892.zip
-cd go-agent-17.4.0/
-./agent.sh &
