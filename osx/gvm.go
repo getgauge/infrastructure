@@ -73,6 +73,8 @@ func main() {
 
 	execute("vagrant", "up")
 
+	execute("vagrant", "ssh", "-c", fmt.Sprintf("GO_SERVER_URL=%s nohup /bin/sh -c \"sh /Users/vagrant/go-agent-17.4.0/agent.sh & disown\"", os.Getenv("GO_SERVER_URL")))
+
 	execute("vagrant", "sandbox", "on")
 
 	watchForRollback()
