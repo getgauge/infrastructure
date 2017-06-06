@@ -18,7 +18,7 @@ import (
 var vagrantFile = `
 Vagrant.configure("2") do |config|
   config.vm.box = "%s"
-  config.vm.network :private_network, type: "dhcp"
+  config.vm.network :private_network, ip: "%s"
   config.vm.synced_folder ".", "/vagrant", type: "nfs"
 end
 `
@@ -62,8 +62,8 @@ func watchForRollback() {
 }
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Println("Missing box name as program argument.\nUsage: gvm <box name>")
+	if len(os.Args) < 3 {
+		fmt.Println("Missing box name/IP as program argument.\nUsage: gvm <box name> <IP>")
 		os.Exit(1)
 	}
 
@@ -71,7 +71,7 @@ func main() {
 
 	execute("vagrant", "plugin", "install", "sahara")
 
-	writeVagrantFile(name)
+	writeVagrantFile(name, os.Args[2])
 
 	execute("vagrant", "up")
 
@@ -83,8 +83,8 @@ func main() {
 	watchForRollback()
 }
 
-func writeVagrantFile(name string) {
-	err := ioutil.WriteFile("Vagrantfile", []byte(fmt.Sprintf(vagrantFile, name)), 0644)
+func writeVagrantFile(name, ip string) {
+	err := ioutil.WriteFile("Vagrantfile", []byte(fmt.Sprintf(vagrantFile, name, ip)), 0644)
 	if err != nil {
 		log.Fatalf("Error writing Vagrantfile `%s`", err.Error())
 	}
