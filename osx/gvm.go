@@ -10,6 +10,8 @@ import (
 
 	"path/filepath"
 
+	"time"
+
 	"github.com/fsnotify/fsnotify"
 )
 
@@ -74,6 +76,7 @@ func main() {
 	execute("vagrant", "up")
 
 	execute("vagrant", "ssh", "-c", fmt.Sprintf("GO_SERVER_URL=%s nohup /bin/sh -c \"sh /Users/vagrant/go-agent-17.4.0/agent.sh & disown\"", os.Getenv("GO_SERVER_URL")))
+	time.Sleep(5000)
 
 	execute("vagrant", "sandbox", "on")
 
