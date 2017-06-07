@@ -75,7 +75,10 @@ func main() {
 
 	execute("vagrant", "up")
 
-	execute("vagrant", "ssh", "-c", fmt.Sprintf("GO_SERVER_URL=%s nohup /bin/sh -c \"echo \"agent.auto.register.hostname=%s\" >> go-agent-17.4.0/config/autoregister.properties && sh /Users/vagrant/go-agent-17.4.0/agent.sh & disown\"", os.Getenv("GO_SERVER_URL"), os.Getenv("AGENT_NAME")))
+	execute("vagrant", "ssh", "-c", fmt.Sprintf("echo -e \"agent.auto.register.key=%s\nagent.auto.register.resources=FT,UT,darwin,installers\nagent.auto.register.hostname=%s\" > go-agent-17.4.0/config/autoregister.properties", os.Getenv("AGENT_AUTO_REGISTER_KEY"), os.Getenv("AGENT_NAME")))
+
+	execute("vagrant", "ssh", "-c", fmt.Sprintf("GO_SERVER_URL=%s nohup /bin/sh -c \"sh /Users/vagrant/go-agent-17.4.0/agent.sh & disown\"", os.Getenv("GO_SERVER_URL")))
+
 	fmt.Println("Waiting for Go Agent to start.")
 	time.Sleep(20000)
 
