@@ -35,5 +35,3 @@ hdiutil unmount /Volumes/Packages\ *
 
 curl -O https://download.gocd.io/binaries/17.4.0-4892/generic/go-agent-17.4.0-4892.zip
 unzip go-agent-17.4.0-4892.zip
-echo "agent.auto.register.key=$AGENT_AUTO_REGISTER_KEY" > go-agent-17.4.0/config/autoregister.properties
-echo "agent.auto.register.resources=FT,UT,darwin,installers" >> go-agent-17.4.0/config/autoregister.properties
