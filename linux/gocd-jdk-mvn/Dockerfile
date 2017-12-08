@@ -3,7 +3,7 @@ FROM gocd/gocd-agent-centos-7:v17.12.0
 LABEL MAINTAINER="getgauge"
 LABEL VERSION="0.1"
 LABEL DESCRIPTION="centos gocd agent with openjdk1.8, git, maven 3.5"
-LABEL REPOSITORY="getgauge/gocd-openjdk18-mvn"
+LABEL REPOSITORY="getgauge/gocd-jdk-mvn"
 
 ENV container docker
 

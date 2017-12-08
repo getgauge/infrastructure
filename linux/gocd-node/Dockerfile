@@ -2,8 +2,8 @@ FROM gocd/gocd-agent-centos-7:v17.12.0
 
 LABEL MAINTAINER="getgauge"
 LABEL VERSION="0.1"
-LABEL DESCRIPTION="centos gocd agent with nodejs, git, xvfb"
-LABEL REPOSITORY="getgauge/gocd-node-xvfb"
+LABEL DESCRIPTION="centos gocd agent with nodejs, git"
+LABEL REPOSITORY="getgauge/gocd-node"
 
 ENV container docker
 
