@@ -1,9 +1,9 @@
 FROM getgauge/gocd-jdk-mvn
 
-LABEL MAINTAINER="getgauge"
-LABEL VERSION="0.1"
-LABEL DESCRIPTION="centos gocd agent with openjdk1.8, git, maven 3.5, mono"
-LABEL REPOSITORY="getgauge/gocd-jdk-mvn-mono"
+LABEL MAINTAINER="getgauge" \
+ VERSION="0.1" \
+ DESCRIPTION="cntos gocd agent with openjdk1.8, git, maven 3.5, mono" \
+ REPOSITORY="getgauge/gocd-jdk-mvn-mono" 
 
 ENV container docker
 

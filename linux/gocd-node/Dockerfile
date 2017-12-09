@@ -1,9 +1,9 @@
 FROM gocd/gocd-agent-centos-7:v17.12.0
 
-LABEL MAINTAINER="getgauge"
-LABEL VERSION="0.1"
-LABEL DESCRIPTION="centos gocd agent with nodejs, git"
-LABEL REPOSITORY="getgauge/gocd-node"
+LABEL MAINTAINER="getgauge" \
+ VERSION="0.1" \
+ DESCRIPTION="centos gocd agent with nodejs, git" \
+ REPOSITORY="getgauge/gocd-node"
 
 ENV container docker
 
@@ -11,16 +11,15 @@ RUN (yum install yum-utils &&\
 yum install -y dh-autoreconf curl-devel expat-devel gettext-devel openssl-devel \
  perl-devel zlib-devel asciidoc xmlto docbook2X getopt &&\
 yum groupinstall -y "Development Tools" &&\
-curl -o git.tar.gz https://www.kernel.org/pub/software/scm/git/git-2.9.3.tar.gz &&\
-tar -zxf git.tar.gz && cd git-2.9.3 &&\
+curl -o git.tar.gz https://www.kernel.org/pub/software/scm/git/git-2.15.1.tar.gz &&\
+tar -zxf git.tar.gz && cd git-2.15.1 &&\
 make configure && ./configure --prefix=/usr && make all && make install &&\
-yum uninstall -y dh-autoreconf curl-devel expat-devel gettext-devel openssl-devel\
+yum remove -y dh-autoreconf curl-devel expat-devel gettext-devel openssl-devel\
  perl-devel zlib-devel asciidoc xmlto docbook2X getopt &&\
 yum groupremove -y "Development Tools" &&\
 curl --silent --location https://rpm.nodesource.com/setup_9.x | bash - && yum -y update &&\
 yum install -y nodejs npm &&\
 echo -e "export JAVA_HOME=/usr/lib/jvm/java-openjdk\nexport M2_HOME=/opt/apache-maven-3.5.0\nexport PATH=/opt/apache-maven-3.5.0/bin:${PATH}" >> /etc/default/go-agent && source /etc/default/go-agent &&\
-chown go /home/go && su go -c "source /etc/default/go-agent && pip install --upgrade --user awscli==1.11.18" && echo "export PATH=$PATH:/home/go/.local/bin" >> /etc/default/go-agent &&\
-su go -c "source /etc/default/go-agent && cd /home/go && rbenv install 2.3.0 && rbenv local 2.3.0 && gem install rake && gem install parser && gem install json && gem install bundler && rbenv install 2.4.0 && rbenv local 2.4.0 && gem install bundler && rbenv global 2.3.0" &&\
+chown go /home/go && su go -c "source /etc/default/go-agent" && echo "export PATH=$PATH:/home/go/.local/bin" >> /etc/default/go-agent &&\
 su go -c "mkdir -p /home/go/.ssh/ && ssh-keyscan -t rsa github.com >> /home/go/.ssh/known_hosts && git config --global user.email \"gaugeci@gmail.com\" && git config --global user.name gaugeci" &&\
 echo "export GO_SERVER_SYSTEM_PROPERTIES=\"$GO_SERVER_SYSTEM_PROPERTIES -Dplugin.cd.go.contrib.elastic-agent.docker.log.level=debug\"" >> /etc/default/go-agent)
