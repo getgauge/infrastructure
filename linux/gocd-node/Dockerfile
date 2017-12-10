@@ -1,5 +1,7 @@
 FROM gocd/gocd-agent-centos-7:v17.12.0
 
+ARG GIT_VERSION=2.15.1
+
 LABEL MAINTAINER="getgauge" \
  VERSION="0.1" \
  DESCRIPTION="centos gocd agent with nodejs, git" \
@@ -11,9 +13,10 @@ RUN (yum install yum-utils &&\
 yum install -y dh-autoreconf curl-devel expat-devel gettext-devel openssl-devel \
  perl-devel zlib-devel asciidoc xmlto docbook2X getopt &&\
 yum groupinstall -y "Development Tools" &&\
-curl -o git.tar.gz https://www.kernel.org/pub/software/scm/git/git-2.15.1.tar.gz &&\
-tar -zxf git.tar.gz && cd git-2.15.1 &&\
+curl -o git.tar.gz https://www.kernel.org/pub/software/scm/git/git-$GIT_VERSION.tar.gz &&\
+tar -zxf git.tar.gz && cd git-$GIT_VERSION &&\
 make configure && ./configure --prefix=/usr && make all && make install &&\
+cd .. && rm -rf git-$GIT_VERSION git.tar.gz &&\
 yum remove -y dh-autoreconf curl-devel expat-devel gettext-devel openssl-devel\
  perl-devel zlib-devel asciidoc xmlto docbook2X getopt &&\
 yum groupremove -y "Development Tools" &&\
