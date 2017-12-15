@@ -1,14 +1,12 @@
-$properties = @("agent.auto.register.key=${$env:GO_EA_AUTO_REGISTER_KEY}",
-"agent.auto.register.environments=${$env:GO_EA_AUTO_REGISTER_ENVIRONMENT}",
-"agent.auto.register.elasticAgent.agentId=${$env:GO_EA_AUTO_REGISTER_ELASTIC_AGENT_ID}",
-"agent.auto.register.elasticAgent.pluginId=${$env:GO_EA_AUTO_REGISTER_ELASTIC_PLUGIN_ID}")
+New-Item -ItemType Directory .\config
 
-@("config", "work", "logs") | % { New-Item -ItemType Directory C:\gocd-agent\$_ }
+$properties = @("agent.auto.register.key=$env:GO_EA_AUTO_REGISTER_KEY",
+"agent.auto.register.environments=$env:GO_EA_AUTO_REGISTER_ENVIRONMENT",
+"agent.auto.register.elasticAgent.agentId=$env:GO_EA_AUTO_REGISTER_ELASTIC_AGENT_ID",
+"agent.auto.register.elasticAgent.pluginId=$env:GO_EA_AUTO_REGISTER_ELASTIC_PLUGIN_ID")
 
-$properties | Out-File "C:\gocd-agent\config\autoregister.properties"
+$properties | Out-File "C:\gocd-agent\config\autoregister.properties" -Encoding "default" -append
 
-$env:GO_SERVER_URL = $env:GO_EA_SERVER_URL
-$env:GOCD_AGENT_WORKING_DIR = "C:\gocd-agent\work"
-$env:GOCD_AGENT_LOG_DIR = "C:\gocd-agent\logs"
+$env:GO_SERVER_URL=$env:GO_EA_SERVER_URL
 
-& C:\gocd-agent\agent.exe
+& .\agent.cmd
