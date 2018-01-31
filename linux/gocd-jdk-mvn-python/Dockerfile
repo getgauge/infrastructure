@@ -7,5 +7,5 @@ LABEL MAINTAINER="getgauge" \
 
 ENV container docker
 
-RUN (yum -y update && yum install -y epel-release && yum install -y python34 python34-setuptools && \
-easy_install-3.4 pip && ln -sf /usr/bin/python3 /usr/bin/python)
+RUN (yum -y update && yum install -y epel-release && \
+su go -c "yum install -y python34 python34-setuptools && easy_install-3.4 pip && ln -sf /usr/bin/python3 /usr/bin/python")
