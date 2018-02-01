@@ -8,4 +8,5 @@ LABEL MAINTAINER="getgauge" \
 ENV container docker
 
 RUN (yum -y update && yum install -y epel-release && yum install -y python34 python34-setuptools && \
-chown go -R /usr/lib/python* && easy_install-3.4 pip && ln -sf /usr/bin/python3 /usr/bin/python)
+easy_install-3.4 pip && pip install virtualenv && \
+echo "export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3.4" >> /etc/bashrc )
