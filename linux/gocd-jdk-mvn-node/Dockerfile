@@ -8,4 +8,4 @@ LABEL MAINTAINER="getgauge" \
 ENV container docker
 
 RUN (curl --silent --location https://rpm.nodesource.com/setup_9.x | bash - &&\
-yum -y update && yum install -y nodejs npm)
+yum -y update && yum --disablerepo=epel install -y nodejs npm)
