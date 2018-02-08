@@ -20,6 +20,8 @@ Vagrant.configure("2") do |config|
   config.vm.box = "%s"
   config.vm.network :private_network, ip: "%s"
   config.vm.synced_folder ".", "/vagrant", type: "nfs"
+  config.vm.provision "shell",
+    inline: "curl -SsL https://raw.githubusercontent.com/getgauge/infrastructure/master/osx/osx.sh | sh"
 end
 `
 
@@ -63,7 +65,7 @@ func watchForRollback() {
 
 func main() {
 	if len(os.Args) < 3 {
-		fmt.Println("Missing box name/IP as program argument.\nUsage: gvm <box name> <IP>")
+		fmt.Println("Missing box name/IP as program argument.\nUsage: cider <box name> <IP>")
 		os.Exit(1)
 	}
 
@@ -73,7 +75,7 @@ func main() {
 
 	writeVagrantFile(name, os.Args[2])
 
-	execute("vagrant", "up")
+	execute("vagrant", "up", "--provision")
 
 	execute("vagrant", "ssh", "-c", fmt.Sprintf("echo -e \"agent.auto.register.key=%s\nagent.auto.register.resources=FT,UT,darwin,installers\nagent.auto.register.hostname=%s\" > go-agent-17.4.0/config/autoregister.properties", os.Getenv("AGENT_AUTO_REGISTER_KEY"), os.Getenv("AGENT_NAME")))
 
