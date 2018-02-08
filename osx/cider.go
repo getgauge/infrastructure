@@ -21,7 +21,8 @@ Vagrant.configure("2") do |config|
   config.vm.network :private_network, ip: "%s"
   config.vm.synced_folder ".", "/vagrant", type: "nfs"
   config.vm.provision "shell",
-    inline: "curl -SsL https://raw.githubusercontent.com/getgauge/infrastructure/master/osx/osx.sh | sh"
+	inline: "curl -SsL https://raw.githubusercontent.com/getgauge/infrastructure/master/osx/osx.sh | sh",
+	privileged: false
 end
 `
 
