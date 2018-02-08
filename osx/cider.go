@@ -15,6 +15,8 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
+const version = "0.0.2"
+
 var vagrantFile = `
 Vagrant.configure("2") do |config|
   config.vm.box = "%s"
@@ -66,8 +68,13 @@ func watchForRollback() {
 
 func main() {
 	if len(os.Args) < 3 {
-		fmt.Println("Missing box name/IP as program argument.\nUsage: cider <box name> <IP>")
+		fmt.Println("Missing box name/IP as program argument.\nUsage: cider <box name> <IP>\n cider version")
 		os.Exit(1)
+	}
+
+	if os.Args[1] == "version"{
+		fmt.Println(version)
+		os.Exit(0)
 	}
 
 	name := os.Args[1]
