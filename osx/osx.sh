@@ -3,6 +3,7 @@ command -v brew >/dev/null 2>&1 || {/usr/bin/ruby -e "$(curl -fsSL https://raw.g
 
 brew update
 brew install git
+brew install jq
 brew install Caskroom/cask/java
 brew install go
 brew install maven
