@@ -24,8 +24,11 @@ Vagrant.configure("2") do |config|
   config.vm.box = "%s"
   config.vm.network :private_network, ip: "%s"
   config.vm.synced_folder ".", "/vagrant", type: "nfs"
-  config.vm.memory = %d
-  config.vm.cpus = %d
+  config.vm.provider "virtualbox" do |v|
+	v.memory = %d
+	v.cpus = %d
+  end
+
   config.vm.provision "shell",
 	inline: "curl -SsL %s | sh",
 	privileged: false
