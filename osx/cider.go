@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -15,18 +16,28 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-const version = "0.0.2"
+const version = "0.0.3"
 
 var vagrantFile = `
 Vagrant.configure("2") do |config|
   config.vm.box = "%s"
   config.vm.network :private_network, ip: "%s"
   config.vm.synced_folder ".", "/vagrant", type: "nfs"
+  config.vm.memory = %d
+  config.vm.cpus = %d
   config.vm.provision "shell",
-	inline: "curl -SsL https://raw.githubusercontent.com/getgauge/infrastructure/master/osx/osx.sh | sh",
+	inline: "curl -SsL %s | sh",
 	privileged: false
 end
 `
+var ip = flag.String("ip", "", "the internal IP address of this agent")
+var name = flag.String("name", "", "the name of this agent")
+var baseImage = flag.String("image", "", "the vagrant base box of this agent")
+var showVersion = flag.Bool("version", false, "prints the version")
+var memory = flag.Int("memory", 2048, "sets the memory of the VM")
+var cpu = flag.Int("cpu", 3, "sets the number of cpus for the VM")
+var provisionScript = flag.String("provision", "", "Script to provision the VM, runs using the shell provisioner")
+var help = flag.Bool("help", false, "prints help message")
 
 func watchForRollback() {
 	watcher, err := fsnotify.NewWatcher()
@@ -67,25 +78,35 @@ func watchForRollback() {
 }
 
 func main() {
-	if len(os.Args) < 3 {
-		fmt.Println("Missing box name/IP as program argument.\nUsage: cider <box name> <IP>\n cider version")
-		os.Exit(1)
-	}
+	flag.Parse()
 
-	if os.Args[1] == "version"{
+	if *showVersion {
 		fmt.Println(version)
 		os.Exit(0)
 	}
 
-	name := os.Args[1]
+	if *help {
+		flag.PrintDefaults()
+		os.Exit(0)
+	}
+
+	if *ip == "" || *name == "" || *baseImage == "" || *provisionScript == "" {
+		fmt.Println("Usage: cider --ip <agent_ip> --name <agent_name> --image <base_vegrant_box_name> --provision <provision_sh_script>")
+		flag.PrintDefaults()
+		os.Exit(0)
+	}
+
+	checkEnvSet("GAUGE_DOWNLOADS_IP")
+	checkEnvSet("GO_SERVER_URL")
+	checkEnvSet("AGENT_AUTO_REGISTER_KEY")
 
 	execute("vagrant", "plugin", "install", "sahara")
 
-	writeVagrantFile(name, os.Args[2])
+	writeVagrantFile(*baseImage, *ip, *memory, *cpu, *provisionScript)
 
 	execute("vagrant", "up", "--provision")
 
-	execute("vagrant", "ssh", "-c", fmt.Sprintf("echo -e \"agent.auto.register.key=%s\nagent.auto.register.resources=FT,UT,darwin,installers\nagent.auto.register.hostname=%s\" > go-agent-17.4.0/config/autoregister.properties", os.Getenv("AGENT_AUTO_REGISTER_KEY"), os.Getenv("AGENT_NAME")))
+	execute("vagrant", "ssh", "-c", fmt.Sprintf("echo -e \"agent.auto.register.key=%s\nagent.auto.register.resources=FT,UT,darwin,installers\nagent.auto.register.hostname=%s\" > go-agent-17.4.0/config/autoregister.properties", os.Getenv("AGENT_AUTO_REGISTER_KEY"), *name))
 
 	execute("vagrant", "ssh", "-c", fmt.Sprintf("sudo /bin/sh -c \"echo '%s downloads.getgauge.io' >> /etc/hosts\"", os.Getenv("GAUGE_DOWNLOADS_IP")))
 
@@ -99,8 +120,15 @@ func main() {
 	watchForRollback()
 }
 
-func writeVagrantFile(name, ip string) {
-	err := ioutil.WriteFile("Vagrantfile", []byte(fmt.Sprintf(vagrantFile, name, ip)), 0644)
+func checkEnvSet(envName string) {
+	if _, ok := os.LookupEnv(envName); !ok {
+		fmt.Printf("%s env is not set.\n", envName)
+		os.Exit(1)
+	}
+}
+
+func writeVagrantFile(baseBox, ip string, memory, cpu int, provisionScript string) {
+	err := ioutil.WriteFile("Vagrantfile", []byte(fmt.Sprintf(vagrantFile, baseBox, ip, memory, cpu, provisionScript)), 0644)
 	if err != nil {
 		log.Fatalf("Error writing Vagrantfile `%s`", err.Error())
 	}
