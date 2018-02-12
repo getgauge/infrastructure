@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"os/signal"
 	"strings"
 
 	"path/filepath"
@@ -50,6 +51,9 @@ func watchForRollback() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	sigchan := make(chan os.Signal, 10)
+	signal.Notify(sigchan, os.Interrupt)
+
 	go func() {
 		for {
 			select {
@@ -63,6 +67,17 @@ func watchForRollback() {
 				if err != nil {
 					log.Println("error:", err)
 				}
+			case <-sigchan:
+				log.Println("Received Kill Signal. Cleaning up before exit..")
+				log.Printf("Halting VM %s\n", *name)
+				execute("vagrant", "halt")
+				log.Printf("Destroying VM %s\n", *name)
+				execute("vagrant", "destroy")
+				log.Println("Cleaning files")
+				os.Remove("Vagrantfile")
+				os.Remove("rollback.txt")
+				log.Println("Done, exiting..")
+				os.Exit(0)
 			}
 		}
 	}()
