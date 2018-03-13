@@ -17,7 +17,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-const version = "0.0.3"
+const version = "0.0.4"
 
 var vagrantFile = `
 Vagrant.configure("2") do |config|
