@@ -1,5 +1,6 @@
 # Infrastructure
 Automation scripts to build GOCD agents for Gauge builds.
+Also contains scripts to setup gauge nightlies.
 
 ## Set-up
 
