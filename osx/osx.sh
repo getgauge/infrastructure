@@ -2,13 +2,13 @@ xcode-select --install
 command -v brew >/dev/null 2>&1 || {/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"}
 
 brew update
-brew install git
-brew install jq
-brew install Caskroom/cask/java
-brew install go
-brew install maven
-brew install nodejs
-brew cask install dotnet-sdk
+brew install git || brew upgrade git
+brew install jq || brew upgrade jq
+brew install Caskroom/cask/java || brew upgrade Caskroom/cask/java
+brew install go || brew upgrade go
+brew install maven || brew upgrade maven
+brew install nodejs || brew upgrade nodejs
+brew cask install dotnet-sdk || brew cask upgrade dotnet-sdk
 
 command -v pip >/dev/null 2>&1 || {
     brew install python3
@@ -16,8 +16,8 @@ command -v pip >/dev/null 2>&1 || {
     echo 'alias python="python3"' >> ~/.bash_profile
 }
 
-brew install ruby-build
-brew install rbenv
+brew install ruby-build || brew upgrade ruby-build
+brew install rbenv || brew upgrade rbenv
 command -v rbenv >/dev/null 2>&1 || {
     rbenv install 2.3.0
     rbenv global 2.3.0
@@ -27,7 +27,7 @@ command -v rbenv >/dev/null 2>&1 || {
 }
 
 brew tap cosmo0920/mingw_w64
-brew install mingw-w64
+brew install mingw-w64 || brew upgrade mingw-w64
 
 if [ ! -f gcc-4.8.0-qt-4.8.4-for-mingw32.dmg ]; then
     curl -O http://crossgcc.rts-software.org/download/gcc-4.8.0-qt-4.8.4-win32/gcc-4.8.0-qt-4.8.4-for-mingw32.dmg
