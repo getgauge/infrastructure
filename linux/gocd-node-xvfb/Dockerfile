@@ -1,10 +1,16 @@
-FROM getgauge/gocd-node
+FROM gocd/gocd-agent-ubuntu-16.04:v18.2.0
 
 LABEL MAINTAINER="getgauge" \
- VERSION="0.1" \
- DESCRIPTION="centos gocd agent with nodejs, git, xvfb" \
+ VERSION="0.2" \
+ DESCRIPTION="ubuntu gocd agent with nodejs, git, xvfb" \
  REPOSITORY="getgauge/gocd-node-xvfb"
 
 ENV container docker
 
-RUN yum install -y xorg-x11-server-Xvfb
+RUN apt update && apt install apt-transport-https &&\
+    apt-key adv --keyserver hkp://pool.sks-keyservers.net --recv-keys 023EDB0B &&\ 
+    echo deb https://dl.bintray.com/gauge/gauge-deb stable main | tee -a /etc/apt/sources.list &&\
+    curl -sL https://deb.nodesource.com/setup_9.x | bash - &&\
+    apt update &&\
+    apt install -y nodejs libgtk2.0-0 libnotify-bin libgconf-2-4 libnss3 xvfb libxss1 libasound2 gauge &&\
+    gauge config gauge_repository_url https://raw.githubusercontent.com/getgauge/gauge-nightly-repository/master/
