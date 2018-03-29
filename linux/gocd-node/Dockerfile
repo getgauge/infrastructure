@@ -3,7 +3,7 @@ FROM gocd/gocd-agent-centos-7:v17.12.0
 ARG GIT_VERSION=2.15.1
 
 LABEL MAINTAINER="getgauge" \
- VERSION="0.1" \
+ VERSION="0.2" \
  DESCRIPTION="centos gocd agent with nodejs, git" \
  REPOSITORY="getgauge/gocd-node"
 
@@ -11,7 +11,7 @@ ENV container docker
 
 RUN (yum install yum-utils &&\
 yum install -y dh-autoreconf curl-devel expat-devel gettext-devel openssl-devel \
- perl-devel zlib-devel asciidoc xmlto docbook2X getopt &&\
+ perl-devel zlib-devel asciidoc xmlto docbook2X getopt libXScrnSaver &&\
 yum groupinstall -y "Development Tools" &&\
 curl -o git.tar.gz https://www.kernel.org/pub/software/scm/git/git-$GIT_VERSION.tar.gz &&\
 tar -zxf git.tar.gz && cd git-$GIT_VERSION &&\
