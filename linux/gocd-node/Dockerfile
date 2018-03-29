@@ -1,6 +1,6 @@
-FROM gocd/gocd-agent-centos-7:v17.12.0
+FROM gocd/gocd-agent-centos-7:v18.2.0
 
-ARG GIT_VERSION=2.15.1
+ARG GIT_VERSION=2.16.3
 
 LABEL MAINTAINER="getgauge" \
  VERSION="0.2" \
@@ -13,7 +13,7 @@ RUN (yum install yum-utils &&\
 yum install -y dh-autoreconf curl-devel expat-devel gettext-devel openssl-devel \
  perl-devel zlib-devel asciidoc xmlto docbook2X getopt libXScrnSaver &&\
 yum groupinstall -y "Development Tools" &&\
-curl -o git.tar.gz https://www.kernel.org/pub/software/scm/git/git-$GIT_VERSION.tar.gz &&\
+curl -o git.tar.gz https://mirrors.edge.kernel.org/pub/software/scm/git/git-$GIT_VERSION.tar.gz &&\
 tar -zxf git.tar.gz && cd git-$GIT_VERSION &&\
 make configure && ./configure --prefix=/usr && make all && make install &&\
 cd .. && rm -rf git-$GIT_VERSION git.tar.gz &&\
