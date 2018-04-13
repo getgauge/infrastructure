@@ -1,7 +1,7 @@
 FROM gocd/gocd-agent-ubuntu-16.04:v18.2.0
 
 LABEL MAINTAINER="getgauge" \
- VERSION="0.2" \
+ VERSION="0.3" \
  DESCRIPTION="ubuntu gocd agent with nodejs, git, xvfb" \
  REPOSITORY="getgauge/gocd-node-xvfb"
 
