@@ -10,6 +10,7 @@ cinst nodejs.install --version 9.4.0 -y
 cinst dotnetcore-sdk -y
 cinst python3 -y
 cinst pip -y
+cinst unzip -y
 :: Refresh envs
 refreshenv
 echo "Installation Finished"
