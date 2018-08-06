@@ -1,4 +1,4 @@
-FROM gocd/gocd-agent-centos-7:v17.12.0
+FROM gocd/gocd-agent-centos-7:v18.7.0
 
 ENV container docker
 
