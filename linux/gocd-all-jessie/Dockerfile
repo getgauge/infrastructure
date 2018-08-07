@@ -23,6 +23,8 @@ curl https://bootstrap.pypa.io/get-pip.py | python3 &&\
 rm -rf /var/lib/apt/lists/*  &&\
 chown go /home/go && pip install virtualenv && su go -c ". /etc/default/go-agent && pip install --upgrade --user awscli==1.11.18" && echo "export PATH=$PATH:/home/go/.local/bin" >> /etc/default/go-agent &&\
 su go -c ". /etc/default/go-agent && cd /home/go && rbenv install 2.4.0 && rbenv local 2.4.0 && gem install bundler && rbenv global 2.4.0" &&\
-su go -c "mkdir -p /home/go/.ssh/ && ssh-keyscan -t rsa github.com >> /home/go/.ssh/known_hosts && git config --global user.email \"gaugeci@gmail.com\" && git config --global user.name gaugeci")
+su go -c "mkdir -p /home/go/.ssh/ && ssh-keyscan -t rsa github.com >> /home/go/.ssh/known_hosts && git config --global user.email \"gaugeci@gmail.com\" && git config --global user.name gaugeci" &&\
+chmod +x /usr/local/bin/go-agent &&\
+mkdir go)
 
 CMD /usr/local/bin/go-agent
