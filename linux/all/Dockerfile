@@ -1,4 +1,4 @@
-FROM gocd/gocd-agent-centos-7:v18.7.0
+FROM gocd/gocd-agent-centos-7:v17.12.0
 
 ENV container docker
 
@@ -8,7 +8,7 @@ yum-config-manager --add-repo http://download.mono-project.com/repo/centos/ && y
 yum install -y epel-release java-1.8.0-openjdk-devel hg mono-complete zip &&\
 yum install -y git-core zlib zlib-devel gcc-c++ patch readline readline-devel libyaml-devel libffi-devel openssl-devel make bzip2 autoconf automake libtool bison curl sqlite-devel &&\
 su go -c "cd /home/go && git clone git://github.com/sstephenson/rbenv.git .rbenv && git clone git://github.com/sstephenson/ruby-build.git .rbenv/plugins/ruby-build" && echo -e 'export PATH="/home/go/.rbenv/bin:/home/go/.rbenv/plugins/ruby-build/bin:/home/go/.rbenv/shims/:$PATH"' >> /etc/default/go-agent && echo 'eval "$(rbenv init -)"' >> /etc/default/go-agent && source /etc/default/go-agent &&\
-curl -o go.zip https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz && tar -C /usr/local -xzf go.zip && echo "export PATH=$PATH:/usr/local/go/bin" >> /etc/default/go-agent && source /etc/default/go-agent && chown go -R /usr/local/go/ &&\
+curl -o go.zip https://storage.googleapis.com/golang/go1.10.3.linux-amd64.tar.gz && tar -C /usr/local -xzf go.zip && echo "export PATH=$PATH:/usr/local/go/bin" >> /etc/default/go-agent && source /etc/default/go-agent && chown go -R /usr/local/go/ &&\
 yum install -y dh-autoreconf curl-devel expat-devel gettext-devel openssl-devel perl-devel zlib-devel asciidoc xmlto docbook2X getopt && yum groupinstall -y "Development Tools" &&\
 curl -o git.tar.gz https://www.kernel.org/pub/software/scm/git/git-2.9.3.tar.gz && tar -zxf git.tar.gz && cd git-2.9.3 && make configure && ./configure --prefix=/usr && make all && make install &&\
 yum install -y nodejs npm python34 jq fakeroot rpm-build rpmdevtools libxml2-devel &&\
