@@ -6,7 +6,7 @@ RUN (yum install -y -q yum-utils &&\
 rpm --import "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF" &&\
 yum-config-manager --add-repo http://download.mono-project.com/repo/centos/ && yum -y update &&\
 yum install -y -q epel-release java-1.8.0-openjdk-devel hg mono-complete zip &&\
-git-core zlib zlib-devel gcc-c++ patch readline readline-devel libyaml-devel libffi-devel openssl-devel make bzip2 autoconf automake libtool bison curl sqlite-devel &&\
+yum install -y -q git-core zlib zlib-devel gcc-c++ patch readline readline-devel libyaml-devel libffi-devel openssl-devel make bzip2 autoconf automake libtool bison curl sqlite-devel &&\
 su go -c "cd /home/go && git clone git://github.com/sstephenson/rbenv.git .rbenv && git clone git://github.com/sstephenson/ruby-build.git .rbenv/plugins/ruby-build" && echo -e 'export PATH="/home/go/.rbenv/bin:/home/go/.rbenv/plugins/ruby-build/bin:/home/go/.rbenv/shims/:$PATH"' >> /etc/default/go-agent && echo 'eval "$(rbenv init -)"' >> /etc/default/go-agent && source /etc/default/go-agent &&\
 curl -o go.zip https://storage.googleapis.com/golang/go1.10.3.linux-amd64.tar.gz && tar -C /usr/local -xzf go.zip && echo "export PATH=$PATH:/usr/local/go/bin" >> /etc/default/go-agent && source /etc/default/go-agent && chown go -R /usr/local/go/ &&\
 yum install -y -q dh-autoreconf curl-devel expat-devel gettext-devel openssl-devel perl-devel zlib-devel asciidoc xmlto docbook2X getopt && yum groupinstall -y "Development Tools" &&\
