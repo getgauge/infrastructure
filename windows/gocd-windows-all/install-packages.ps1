@@ -30,5 +30,5 @@ Remove-Item C:\\Users\\ContainerAdministrator\\AppData\\Local\\Temp\\chocolatey 
 
 # install gocd bootstrapper
 Invoke-WebRequest https://github.com/ketan/gocd-golang-bootstrapper/releases/download/${GOLANG_BOOTSTRAPPER_VERSION}/go-bootstrapper-${GOLANG_BOOTSTRAPPER_VERSION}.windows.amd64.exe -Outfile C:\\go-agent.exe
-
+mkdir C:\go
 Add-LocalGroupMember -Group "Administrators" -Member "ContainerAdministrator"
