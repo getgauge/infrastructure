@@ -14,13 +14,13 @@ cinst git -y
 cinst golang -y
 cinst jdk8 -y
 cinst maven -y
-# cinst dotnet4.5 -y
-# cinst nvm -y
+cinst dotnet4.5 -y
+cinst nvm -y
 cinst nodejs.install --version 9.4.0 -y
-# cinst dotnetcore-sdk -y
-# cinst python3 -y
-# cinst pip -y
-# cinst unzip -y
+cinst dotnetcore-sdk -y
+cinst python3 -y
+cinst pip -y
+cinst unzip -y
 # Refresh envs
 refreshenv
 
