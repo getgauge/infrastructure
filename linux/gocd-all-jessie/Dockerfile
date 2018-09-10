@@ -15,7 +15,7 @@ apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BF
 echo "deb https://download.mono-project.com/repo/debian stable-stretch main" | tee /etc/apt/sources.list.d/mono-official-stable.list &&\
 curl -sL https://deb.nodesource.com/setup_10.x | bash - &&\
 apt-get update &&\
-apt-get install -y --no-install-recommends mono-complete openjdk-8-jdk-headless git zip nodejs build-essential npm jq maven libssl1.0-dev libreadline-dev zlib1g-dev &&\
+apt-get install -y --no-install-recommends mono-complete openjdk-8-jdk-headless git zip unzip nodejs build-essential npm jq maven libssl1.0-dev libreadline-dev zlib1g-dev &&\
 echo "Installing rbenv" &&\
 su go -c "cd /home/go && git clone git://github.com/sstephenson/rbenv.git .rbenv && git clone git://github.com/sstephenson/ruby-build.git .rbenv/plugins/ruby-build" && echo 'export PATH="/home/go/.rbenv/bin:/home/go/.rbenv/plugins/ruby-build/bin:/home/go/.rbenv/shims/:$PATH"' >> /etc/default/go-agent && echo 'eval "$(rbenv init -)"' >> /etc/default/go-agent && . /etc/default/go-agent &&\
 echo "Installing Pypi" &&\
