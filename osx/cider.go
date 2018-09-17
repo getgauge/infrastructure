@@ -124,7 +124,7 @@ func main() {
 
 	execute("vagrant", "up", "--provision")
 
-	execute("vagrant", "ssh", "-c", fmt.Sprintf("echo -e \"agent.auto.register.key=%s\nagent.auto.register.resources=FT,UT,darwin,installers\nagent.auto.register.hostname=%s\" > go-agent-17.4.0/config/autoregister.properties", os.Getenv("AGENT_AUTO_REGISTER_KEY"), *name))
+	execute("vagrant", "ssh", "-c", fmt.Sprintf("echo -e \"agent.auto.register.key=%s\nagent.auto.register.resources=FT,UT,darwin\nagent.auto.register.environments=all\nagent.auto.register.hostname=%s\" > go-agent-17.4.0/config/autoregister.properties", os.Getenv("AGENT_AUTO_REGISTER_KEY"), *name))
 
 	execute("vagrant", "ssh", "-c", fmt.Sprintf("sudo /bin/sh -c \"echo '%s downloads.gauge.org' >> /etc/hosts\"", os.Getenv("GAUGE_DOWNLOADS_IP")))
 
