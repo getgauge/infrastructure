@@ -4,7 +4,7 @@ command -v brew >/dev/null 2>&1 || {/usr/bin/ruby -e "$(curl -fsSL https://raw.g
 brew update
 brew install git || brew upgrade git
 brew install jq || brew upgrade jq
-brew install Caskroom/cask/java || brew upgrade Caskroom/cask/java
+brew install Caskroom/cask/java && brew upgrade Caskroom/cask/java
 brew install go || brew upgrade go
 brew install maven || brew upgrade maven
 brew install nodejs || brew upgrade nodejs
