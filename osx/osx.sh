@@ -10,6 +10,15 @@ brew install maven || brew upgrade maven
 brew install nodejs || brew upgrade nodejs
 brew cask install dotnet-sdk || brew cask upgrade dotnet-sdk
 
+# Install jabba (java version manager) to handle java versions
+curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | sh
+echo "source ~/.jabba/jabba.sh" >> ~/.bash_profile
+source ~/.bash_profile
+
+# Install java 10 explicitly
+jabba install 1.10.0
+
+
 command -v pip >/dev/null 2>&1 || {
     brew install python3
     echo 'alias pip="pip3"' >> ~/.bash_profile
