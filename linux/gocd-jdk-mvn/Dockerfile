@@ -1,7 +1,7 @@
 FROM gocd/gocd-agent-centos-7:v17.12.0
 
 ARG GIT_VERSION=2.15.1
-ARG MAVEN_VERSION=3.5.2
+ARG MAVEN_VERSION=3.5.4
 
 LABEL MAINTAINER="getgauge" \
  VERSION="0.1" \
@@ -10,18 +10,21 @@ LABEL MAINTAINER="getgauge" \
 
 ENV container docker
 
-RUN (yum install yum-utils &&\
+RUN (yum install -y yum-utils wget &&\
 yum install -y dh-autoreconf curl-devel expat-devel gettext-devel openssl-devel \
  perl-devel zlib-devel asciidoc xmlto docbook2X getopt &&\
 yum groupinstall -y "Development Tools" &&\
-curl -o git.tar.gz https://www.kernel.org/pub/software/scm/git/git-$GIT_VERSION.tar.gz &&\
+curl -o git.tar.gz https://mirrors.edge.kernel.org/pub/software/scm/git/git-$GIT_VERSION.tar.gz &&\
 tar -zxf git.tar.gz && cd git-$GIT_VERSION &&\
 make configure && ./configure --prefix=/usr && make all && make install &&\
 cd .. && rm -rf git-$GIT_VERSION git.tar.gz &&\
 yum remove -y dh-autoreconf curl-devel expat-devel gettext-devel openssl-devel\
  perl-devel zlib-devel asciidoc xmlto docbook2X getopt &&\
 yum groupremove -y "Development Tools" &&\
-yum install -y epel-release java-1.8.0-openjdk-devel zip &&\
+yum install -y epel-release zip &&\
+wget --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/10.0.2+13/19aef61b38124481863b1413dce1855f/jdk-10.0.2_linux-x64_bin.rpm &&\
+yum install -y jdk-10.0.2_linux-x64_bin.rpm &&\
+curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | JABBA_COMMAND="install 1.10.0 -o /usr/lib/jvm/java-openjdk" bash &&\
 curl -o mvn.tar.gz http://www-eu.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz &&\
 tar -C /opt -xzf mvn.tar.gz && rm mvn.tar.gz &&\
 echo -e "export JAVA_HOME=/usr/lib/jvm/java-openjdk\nexport M2_HOME=/opt/apache-maven-$MAVEN_VERSION\nexport PATH=/opt/apache-maven-$MAVEN_VERSION/bin:${PATH}" >> /etc/default/go-agent && source /etc/default/go-agent &&\
