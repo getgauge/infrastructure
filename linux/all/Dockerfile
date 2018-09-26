@@ -5,13 +5,13 @@ ENV PATH="/home/go/.rbenv/bin:/home/go/.rbenv/plugins/ruby-build/bin:/home/go/.r
 ENV JAVA_HOME="/usr/lib/jvm/java-openjdk"
 ENV M2_HOME="/opt/apache-maven-3.5.4"
 
-RUN (yum install -y -q yum-utils wget &&\
+RUN (yum install -y -q yum-utils &&\
 rpm --import "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF" &&\
 yum-config-manager --add-repo http://download.mono-project.com/repo/centos/ && yum -y update &&\
 yum install -y -q https://centos7.iuscommunity.org/ius-release.rpm &&\
-yum install -y -q epel-release hg mono-complete zip &&\
-wget --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/10.0.2+13/19aef61b38124481863b1413dce1855f/jdk-10.0.2_linux-x64_bin.rpm &&\
-yum install -y jdk-10.0.2_linux-x64_bin.rpm &&\
+yum install -y -q epel-release  java-1.8.0-openjdk-devel hg mono-complete zip &&\
+curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | bash && . ~/.jabba/jabba.sh &&\
+jabba install 1.10.0 &&\
 yum install -y -q zlib dpkg zlib-devel gcc-c++ patch readline readline-devel libyaml-devel libffi-devel openssl-devel make bzip2 autoconf automake libtool bison curl sqlite-devel &&\
 su go -c "cd /home/go && git clone git://github.com/sstephenson/rbenv.git .rbenv && git clone git://github.com/sstephenson/ruby-build.git .rbenv/plugins/ruby-build" &&\
 curl -o go.zip https://storage.googleapis.com/golang/go1.10.3.linux-amd64.tar.gz && tar -C /usr/local -xzf go.zip && chown go -R /usr/local/go/ &&\
