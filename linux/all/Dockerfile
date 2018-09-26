@@ -10,8 +10,7 @@ rpm --import "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3FA7E032808
 yum-config-manager --add-repo http://download.mono-project.com/repo/centos/ && yum -y update &&\
 yum install -y -q https://centos7.iuscommunity.org/ius-release.rpm &&\
 yum install -y -q epel-release  java-1.8.0-openjdk-devel hg mono-complete zip &&\
-curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | bash && . ~/.jabba/jabba.sh &&\
-jabba install 1.10.0 &&\
+
 yum install -y -q zlib dpkg zlib-devel gcc-c++ patch readline readline-devel libyaml-devel libffi-devel openssl-devel make bzip2 autoconf automake libtool bison curl sqlite-devel &&\
 su go -c "cd /home/go && git clone git://github.com/sstephenson/rbenv.git .rbenv && git clone git://github.com/sstephenson/ruby-build.git .rbenv/plugins/ruby-build" &&\
 curl -o go.zip https://storage.googleapis.com/golang/go1.10.3.linux-amd64.tar.gz && tar -C /usr/local -xzf go.zip && chown go -R /usr/local/go/ &&\
@@ -22,6 +21,7 @@ curl -o mvn.tar.gz http://www-us.apache.org/dist/maven/maven-3/3.5.4/binaries/ap
 rm go.zip mvn.tar.gz &&\
 echo -e 'eval "$(rbenv init -)"' >> /etc/default/go-agent &&\
 chown go /home/go && pip install virtualenv && su go -c "pip install --upgrade --user awscli==1.11.18" &&\
+su go -c "curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | bash && . ~/.jabba/jabba.sh" &&\
 su go -c "source /etc/default/go-agent && cd /home/go && rbenv install 2.3.0 && rbenv local 2.3.0 && gem install rake && gem install parser && gem install json && gem install bundler && rbenv install 2.4.0 && rbenv local 2.4.0 && gem install bundler && rbenv global 2.3.0" &&\
 su go -c "mkdir -p /home/go/.ssh/ && ssh-keyscan -t rsa github.com >> /home/go/.ssh/known_hosts && git config --global user.email \"gaugeci@gmail.com\" && git config --global user.name gaugeci" &&\
 echo "export GO_SERVER_SYSTEM_PROPERTIES=\"$GO_SERVER_SYSTEM_PROPERTIES -Dplugin.cd.go.contrib.elastic-agent.docker.log.level=debug\"" >> /etc/default/go-agent &&\
