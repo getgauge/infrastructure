@@ -1,4 +1,4 @@
-FROM gocd/gocd-agent-centos-7:v17.12.0
+FROM gocd/gocd-agent-centos-7:v18.10.0
 
 ARG GIT_VERSION=2.15.1
 ARG MAVEN_VERSION=3.5.4
