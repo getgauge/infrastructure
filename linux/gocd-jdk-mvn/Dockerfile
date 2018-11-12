@@ -21,7 +21,7 @@ cd .. && rm -rf git-$GIT_VERSION git.tar.gz &&\
 yum remove -y dh-autoreconf curl-devel expat-devel gettext-devel openssl-devel\
  perl-devel zlib-devel asciidoc xmlto docbook2X getopt &&\
 yum groupremove -y "Development Tools" &&\
-yum install -y epel-release java-1.10.0-openjdk-devel zip &&\
+yum install -y epel-release java-10-openjdk-devel zip &&\
 curl -o mvn.tar.gz http://www-eu.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz &&\
 tar -C /opt -xzf mvn.tar.gz && rm mvn.tar.gz &&\
 echo -e "export JAVA_HOME=/usr/lib/jvm/java-openjdk\nexport M2_HOME=/opt/apache-maven-$MAVEN_VERSION\nexport PATH=/opt/apache-maven-$MAVEN_VERSION/bin:${PATH}" >> /etc/default/go-agent && source /etc/default/go-agent &&\
