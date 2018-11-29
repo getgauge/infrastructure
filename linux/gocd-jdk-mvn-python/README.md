@@ -1,4 +1,4 @@
-# Docker image - Centos7, GOCD Agent, git2.9.3, OpenJDK-1.8, maven 3.5, Python
+# Docker image - Ubuntu 18.04, GOCD Agent, OpenJDK-1.11, maven 3.5, Python
 
 > This image is used for building/running gauge projects in (gocd)[gocd.org]
 

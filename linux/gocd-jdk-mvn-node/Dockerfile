@@ -1,11 +1,15 @@
 FROM getgauge/gocd-jdk-mvn
 
 LABEL MAINTAINER="getgauge" \
- VERSION="0.1"\
- DESCRIPTION="centos gocd agent with openjdk1.8, git, maven 3.5, nodejs"\
+ VERSION="0.2"\
+ DESCRIPTION="ubuntu gocd agent with openjdk1.11, git, maven 3.5, nodejs"\
  REPOSITORY="getgauge/gocd-jdk-mvn-node"
 
 ENV container docker
 
-RUN (curl --silent --location https://rpm.nodesource.com/setup_9.x | bash - &&\
-yum -y update && yum --disablerepo=epel install -y nodejs npm)
+RUN apt-get update && apt-get install -y gnupg &&\
+curl -sL https://deb.nodesource.com/setup_11.x | bash - &&\
+apt-get update && apt-get install -y nodejs &&\
+apt autoremove -y &&\
+rm -rf /var/lib/apt/lists/*
+
