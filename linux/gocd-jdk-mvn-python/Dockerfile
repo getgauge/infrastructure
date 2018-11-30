@@ -11,4 +11,5 @@ RUN (apt-get update &&\
 apt-get install -y --no-install-recommends python3.7 python3-pip &&\
 rm -rf /var/lib/apt/lists/* &&\
 ln -sf /usr/bin/python3 /usr/bin/python && \
+ln -sf /usr/bin/pip3 /usr/bin/pip && \
 echo "export PATH=/home/go/.local/bin:$PATH" >> /etc/bashrc )
