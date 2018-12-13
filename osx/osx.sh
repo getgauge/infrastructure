@@ -16,7 +16,7 @@ echo "source ~/.jabba/jabba.sh" >> ~/.bash_profile
 source ~/.bash_profile
 
 # Install java 10 explicitly
-jabba install 1.10.0
+jabba install openjdk@1.10-0
 
 
 command -v pip >/dev/null 2>&1 || {
