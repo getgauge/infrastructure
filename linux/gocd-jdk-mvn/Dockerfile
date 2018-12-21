@@ -9,6 +9,5 @@ LABEL MAINTAINER="getgauge" \
 ENV container docker
 
 RUN apt-get update &&\
-apt-get install gnupg &&\
-apt-get install -y --no-install-recommends openjdk-11-jdk maven &&\
+apt-get install -y --no-install-recommends gnupg openjdk-11-jdk maven &&\
 rm -rf /var/lib/apt/lists/*
