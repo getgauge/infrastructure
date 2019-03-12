@@ -4,8 +4,7 @@ LABEL description="debian image with node and dependencies for headless chrome"\
     repository="getgauge/gocd-ubuntu-node"
 
 
-ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
-ENV PATH=$PATH:/home/node/.npm-global/bin
+ENV container docker
 
 # requirements for chrome headless
 # https://github.com/Googlechrome/puppeteer/issues/290#issuecomment-322838700
