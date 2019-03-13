@@ -1,10 +1,12 @@
 FROM gocd/gocd-agent-ubuntu-18.04:v18.11.0
 
-LABEL description="debian image with node and dependencies for headless chrome"\
-    repository="getgauge/gocd-ubuntu-node"
-
+LABEL MAINTAINER="getgauge" \
+  VERSION="0.1" \
+  DESCRIPTION="debian image with node and dependencies for headless chrome"\
+  REPOSITORY="getgauge/gocd-ubuntu-node"
 
 ENV container docker
+ENV DEBIAN_FRONTEND=noninteractive
 
 # requirements for chrome headless
 # https://github.com/Googlechrome/puppeteer/issues/290#issuecomment-322838700
