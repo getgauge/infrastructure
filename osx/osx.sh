@@ -27,6 +27,8 @@ command -v pip >/dev/null 2>&1 || {
 
 brew install ruby-build || brew upgrade ruby-build
 brew install rbenv || brew upgrade rbenv
+echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
+source ~/.bash_profile
 command -v rbenv >/dev/null 2>&1 || {
     rbenv install 2.3.0
     rbenv global 2.3.0
