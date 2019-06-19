@@ -16,7 +16,9 @@ cinst jdk8 -y
 cinst maven -y
 cinst dotnet4.5 -y
 cinst nvm -y
-cinst nodejs.install --version 9.4.0 -y
+nvm install 8.16.0
+nvm install 10.16.0
+nvm install 12.4.0
 cinst dotnetcore-sdk -y
 cinst python3 -y
 cinst pip -y
