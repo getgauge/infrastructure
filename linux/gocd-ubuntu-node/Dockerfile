@@ -13,7 +13,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y gnupg &&\
 curl -sL https://deb.nodesource.com/setup_11.x | bash - &&\
 apt-get update &&  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh | bash &&\
-apt-get update && export NVM_DIR=/root/.nvm[ -s $NVM_DIR/nvm.sh ] && \. $NVM_DIR/nvm.sh && nvm --version &&\
+apt-get update && export NVM_DIR="/root/.nvm" &&\
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" &&\
+apt-get update && nvm --version &&\
 apt-get update &&\
 apt-get install -y git-all gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 \
   libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 \
