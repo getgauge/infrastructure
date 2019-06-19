@@ -16,9 +16,9 @@ cinst jdk8 -y
 cinst maven -y
 cinst dotnet4.5 -y
 cinst nvm -y
-nvm install 8.16.0
-nvm install 10.16.0
-nvm install 12.4.0
+nvm install 8
+nvm install 10
+nvm install 12
 cinst dotnetcore-sdk -y
 cinst python3 -y
 cinst pip -y

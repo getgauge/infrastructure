@@ -15,6 +15,6 @@ RUN apt update && apt install apt-transport-https &&\
     apt-get update && export NVM_DIR="/root/.nvm" &&\
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" &&\
     apt-get update && nvm --version &&\
-    apt-get update && nvm install v8.16.0&& nvm install v10.16.0 && nvm install v12.4.0 &&\
+    apt-get update && nvm install 8 nvm install 10 && nvm install 12 &&\
     apt update &&\
     apt install -y libgtk2.0-0 libnotify-bin libgconf-2-4 libnss3 xvfb libxss1 libasound2

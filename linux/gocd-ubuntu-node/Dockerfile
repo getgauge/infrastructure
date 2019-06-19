@@ -16,7 +16,7 @@ apt-get update &&  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.
 apt-get update && export NVM_DIR="/root/.nvm" &&\
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" &&\
 apt-get update && nvm --version &&\
-apt-get update && nvm install v8.16.0&& nvm install v10.16.0 && nvm install v12.4.0 &&\
+apt-get update && nvm install 8 && nvm install 10 && nvm install 12 &&\
 apt-get update &&\
 apt-get install -y git-all gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 \
   libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 \
