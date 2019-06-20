@@ -12,9 +12,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # https://github.com/Googlechrome/puppeteer/issues/290#issuecomment-322838700
 RUN apt-get update && apt-get install -y gnupg &&\
 curl -sL https://deb.nodesource.com/setup_11.x | bash - &&\
-apt-get update &&  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh | bash &&\
-apt-get update && export NVM_DIR="/root/.nvm" &&\
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" &&\
+apt-get update &&  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh | sh && . ~/.profile &&\
 apt-get update && nvm --version &&\
 apt-get update && nvm install 8 && nvm install 10 && nvm install 12 &&\
 apt-get update &&\
