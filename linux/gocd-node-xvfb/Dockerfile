@@ -11,8 +11,5 @@ RUN apt update && apt install apt-transport-https &&\
     apt-key adv --keyserver hkp://pool.sks-keyservers.net --recv-keys 023EDB0B &&\ 
     echo deb https://dl.bintray.com/gauge/gauge-deb nightly main | tee -a /etc/apt/sources.list &&\
     curl -sL https://deb.nodesource.com/setup_9.x | bash - &&\
-    apt-get update &&  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh | sh && . ~/.profile &&\
-    apt-get update && nvm --version &&\
-    apt-get update && nvm install 8 nvm install 10 && nvm install 12 &&\
     apt update &&\
-    apt install -y libgtk2.0-0 libnotify-bin libgconf-2-4 libnss3 xvfb libxss1 libasound2
+    apt install -y nodejs libgtk2.0-0 libnotify-bin libgconf-2-4 libnss3 xvfb libxss1 libasound2
