@@ -10,12 +10,13 @@ rpm --import "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3FA7E032808
 yum-config-manager --add-repo http://download.mono-project.com/repo/centos/ && yum -y update &&\
 yum install -y -q https://centos7.iuscommunity.org/ius-release.rpm &&\
 yum install -y -q epel-release  java-1.8.0-openjdk-devel hg mono-complete zip &&\
-
 yum install -y -q zlib dpkg zlib-devel gcc-c++ patch readline readline-devel libyaml-devel libffi-devel openssl-devel make bzip2 autoconf automake libtool bison curl sqlite-devel &&\
 su go -c "cd /home/go && git clone git://github.com/sstephenson/rbenv.git .rbenv && git clone git://github.com/sstephenson/ruby-build.git .rbenv/plugins/ruby-build" &&\
 curl -o go.zip https://storage.googleapis.com/golang/go1.10.3.linux-amd64.tar.gz && tar -C /usr/local -xzf go.zip && chown go -R /usr/local/go/ &&\
-yum install -y -q nodejs npm python34 jq fakeroot rpm-build rpmdevtools libxml2-devel &&\
+yum install -y -q nodejs npm python36 python36-setuptools jq fakeroot rpm-build rpmdevtools libxml2-devel &&\
 yum erase -y git && yum install -y -q git2u-core &&\
+rpm -Uvh https://packages.microsoft.com/config/rhel/7/packages-microsoft-prod.rpm &&\
+yum install -y dotnet-sdk-2.2 &&\
 curl https://bootstrap.pypa.io/get-pip.py | python3 &&\
 curl -o mvn.tar.gz http://www-us.apache.org/dist/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz && tar -C /opt -xzf mvn.tar.gz &&\
 rm go.zip mvn.tar.gz &&\
