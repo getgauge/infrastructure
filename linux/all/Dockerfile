@@ -23,7 +23,7 @@ rm go.zip mvn.tar.gz &&\
 echo -e 'eval "$(rbenv init -)"' >> /etc/default/go-agent &&\
 chown go /home/go && pip install virtualenv && su go -c "pip install --upgrade --user awscli==1.16.193" &&\
 su go -c "curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | bash && . ~/.jabba/jabba.sh" &&\
-su go -c "curl https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash && . ~/.bashrc && nvm install --lts && npm use --lts" &&\
+su go -c "curl https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash && . ~/.bashrc && nvm install --lts && nvm use --lts" &&\
 su go -c "source /etc/default/go-agent && cd /home/go && rbenv install 2.6.0 && rbenv local 2.6.0 && gem install rake && gem install parser && gem install json && gem install bundler && rbenv global 2.6.0" &&\
 su go -c "mkdir -p /home/go/.ssh/ && ssh-keyscan -t rsa github.com >> /home/go/.ssh/known_hosts && git config --global user.email \"gaugeci@gmail.com\" && git config --global user.name gaugeci" &&\
 echo "export GO_SERVER_SYSTEM_PROPERTIES=\"$GO_SERVER_SYSTEM_PROPERTIES -Dplugin.cd.go.contrib.elastic-agent.docker.log.level=debug\"" >> /etc/default/go-agent &&\
