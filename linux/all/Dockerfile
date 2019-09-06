@@ -17,6 +17,7 @@ yum install -y -q nodejs npm python36 python36-setuptools jq fakeroot rpm-build 
 yum erase -y git && yum install -y -q git2u-core &&\
 rpm -Uvh https://packages.microsoft.com/config/rhel/7/packages-microsoft-prod.rpm &&\
 yum install -y dotnet-sdk-2.2 &&\
+yum install -y hub &&\
 curl https://bootstrap.pypa.io/get-pip.py | python3 &&\
 curl -o mvn.tar.gz http://www-us.apache.org/dist/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz && tar -C /opt -xzf mvn.tar.gz &&\
 rm go.zip mvn.tar.gz &&\
