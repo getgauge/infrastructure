@@ -7,8 +7,8 @@ LABEL MAINTAINER="getgauge" \
 
 ENV container docker
 
-RUN apt update && apt install -y software-properties-common &&\
-    add-apt-repository ppa:gophers/archive && apt-get update &&\
-    apt-get install -y golang-1.10-go zip unzip &&\
-    echo "export PATH=/usr/lib/go-1.10/bin:$PATH" >> /etc/default/go-agent
+RUN apt-get update && apt-get install -y software-properties-common &&\
+    add-apt-repository ppa:longsleep/golang-backports &&\
+    apt-get update &&\
+    apt-get install golang-go
 
