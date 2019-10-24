@@ -10,5 +10,5 @@ ENV container docker
 RUN apt-get update && apt-get install -y software-properties-common &&\
     add-apt-repository ppa:longsleep/golang-backports &&\
     apt-get update &&\
-    apt-get install golang-go
+    apt-get install -y golang-go
 
